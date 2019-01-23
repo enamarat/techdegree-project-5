@@ -4,14 +4,8 @@ let xhr = new XMLHttpRequest();
 // 2. Creating a callback function
 xhr.onreadystatechange = function () {
   if (xhr.readyState === 4) {
-    //console.log(xhr.responseText);
-    //console.log(typeof xhr.responseText);
-
     // Converting string from the response to JSON format
     const employees = JSON.parse(xhr.responseText);
-    console.log(employees);
-    //console.log(typeof employee);
-
     /* Looping through employees and creating HTML elements
      for each of them */
     let employeeHTML = "";
@@ -30,20 +24,22 @@ xhr.onreadystatechange = function () {
         employeeHTML +=
         `</div>`;
       }
-
+    // Appending created HTML elements to the "gallery" div
     document.getElementById('gallery').innerHTML = employeeHTML;
   }
 }
 /* 3. Opening a request which specifies in a query string
-that we want to reguest 12 users and that we want to get
+that we want to reguest info about 12 users and that we want to get
 the response in JSON format*/
 xhr.open('GET', 'https://randomuser.me/api/?format=json&results=12');
 // 4. Sending a request
 xhr.send();
 
-/* Function which creates an overlay with additional information
+/* Function which creates a modal window with additional information
 about an employee when they are clicked on */
 const revealUserAdditionalInfo = (event) => {
+  /* The following conditions make sure that only certain
+  HTML elements will trigger the function when they are clicked */
   if (event.target.className === "card"
   || event.target.className === "card-img-container"
   || event.target.className === "card-info-container"
@@ -55,37 +51,53 @@ const revealUserAdditionalInfo = (event) => {
     //console.log(event.target);
     //const h3 = document.getElementsByTagName('h3');
 
+    /* Looping through data brought by response to our AJAX
+    request and comparing the values of first and last employee
+    names in it to text content of the clicked element. If the data
+    and content of HTML element are equal, modal window is appended
+    to the "gallery" div*/
     for (let j = 0; j < employees.results.length; j +=1) {
-      if (event.target.tagName === "H3") {
-        console.log(event.target.textContent);
-        //console.log(employees.results[0].name);
-        let employeeName = " ";
-        employeeName += employees.results[j].name.first;
-        employeeName += " ";
-        employeeName += employees.results[j].name.last;
-        employeeName += " ";
-        console.log(employeeName);
-        console.log(employeeName.length);
-        console.log(event.target.textContent.length);
-        if (event.target.textContent == employeeName) {
-          const modalDiv = document.createElement('div');
-          modalDiv.setAttribute('class', 'modal-container');
-          document.getElementById('gallery').appendChild(modalDiv);
-          modalDiv.innerHTML = `<div class="modal">
-            <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
-            <div class="modal-info-container">
-              <img class="modal-img" src="${employees.results[j].picture.large}" alt="profile picture"/>
-              <h3 id="name" class="modal-name cap">${employees.results[j].name.first} ${employees.results[j].name.last} </h3>
-              <p class="modal-text">${employees.results[j].email}</p>
-              <p class="modal-text cap">${employees.results[j].location.city}</p>
-              <hr>
-              <p class="modal-text">${employees.results[j].cell}</p>
-              <p class="modal-text">${employees.results[j].location.street}, ${employees.results[j].location.city}, OR ${employees.results[j].location.postcode}</p>
-              <p class="modal-text">Birthday: ${employees.results[j].dob.date}</p>
-            </div>
-          </div>`;
-        }
+      const findMatches = (triggeringElement) => {
+          //console.log(event.target.textContent);
+          //console.log(employees.results[0].name);
+          let employeeName = " ";
+          employeeName += employees.results[j].name.first;
+          employeeName += " ";
+          employeeName += employees.results[j].name.last;
+          employeeName += " ";
+          //console.log(employeeName);
+          //console.log(employeeName.length);
+          //console.log(event.target.textContent.length);
+          if (triggeringElement.textContent == employeeName) {
+            const modalDiv = document.createElement('div');
+            modalDiv.setAttribute('class', 'modal-container');
+            document.getElementById('gallery').appendChild(modalDiv);
+            modalDiv.innerHTML = `<div class="modal">
+              <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+              <div class="modal-info-container">
+                <img class="modal-img" src="${employees.results[j].picture.large}" alt="profile picture"/>
+                <h3 id="name" class="modal-name cap">${employees.results[j].name.first} ${employees.results[j].name.last} </h3>
+                <p class="modal-text">${employees.results[j].email}</p>
+                <p class="modal-text cap">${employees.results[j].location.city}</p>
+                <hr>
+                <p class="modal-text">${employees.results[j].cell}</p>
+                <p class="modal-text">${employees.results[j].location.street}, ${employees.results[j].location.city}, OR ${employees.results[j].location.postcode}</p>
+                <p class="modal-text">Birthday: ${employees.results[j].dob.date}</p>
+              </div>
+            </div>`;
+          }
       }
+      if (event.target.tagName === "H3") {
+      findMatches(event.target);
+    } else if (event.target.className === "card-info-container") {
+      findMatches(event.target.childNodes[1]);
+    } else if (event.target.className === "card-img-container") {
+      findMatches(event.target.nextSibling.childNodes[1]);
+    } else if (event.target.tagName === "IMG") {
+      findMatches(event.target.parentNode.nextSibling.childNodes[1]);
+    } else if (event.target.tagName === "P") {
+      findMatches(event.target.parentNode.childNodes[1]);
+    }
     }
   }
 }
