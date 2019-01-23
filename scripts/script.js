@@ -47,32 +47,29 @@ const revealUserAdditionalInfo = (event) => {
   || event.target.tagName === "P"
   || event.target.tagName === "H3") {
     const employees = JSON.parse(xhr.responseText);
-
-    //console.log(event.target);
-    //const h3 = document.getElementsByTagName('h3');
-
     /* Looping through data brought by response to our AJAX
-    request and comparing the values of first and last employee
-    names in it to text content of the clicked element. If the data
-    and content of HTML element are equal, modal window is appended
-    to the "gallery" div*/
+    request */
     for (let j = 0; j < employees.results.length; j +=1) {
+      /* This function compares the values of first and last employees's
+      names in the AJAX response to the text content of the clicked element. If
+      the data and content of HTML element are equal, modal window is appended
+      to the "gallery" div */
       const findMatches = (triggeringElement) => {
-          //console.log(event.target.textContent);
-          //console.log(employees.results[0].name);
-          let employeeName = " ";
-          employeeName += employees.results[j].name.first;
-          employeeName += " ";
-          employeeName += employees.results[j].name.last;
-          employeeName += " ";
-          //console.log(employeeName);
-          //console.log(employeeName.length);
-          //console.log(event.target.textContent.length);
-          if (triggeringElement.textContent == employeeName) {
-            const modalDiv = document.createElement('div');
-            modalDiv.setAttribute('class', 'modal-container');
-            document.getElementById('gallery').appendChild(modalDiv);
-            modalDiv.innerHTML = `<div class="modal">
+        // Function extracts employees's first and last names
+        let employeeName = " ";
+        employeeName += employees.results[j].name.first;
+        employeeName += " ";
+        employeeName += employees.results[j].name.last;
+        employeeName += " ";
+        /* Function compares text content of the clicked element with
+        the extracted names from the AJAX response and creates a
+         modal window if there is a match */
+        if (triggeringElement.textContent == employeeName) {
+          const modalDiv = document.createElement('div');
+          modalDiv.setAttribute('class', 'modal-container');
+          document.getElementById('gallery').appendChild(modalDiv);
+          modalDiv.innerHTML = `
+            <div class="modal">
               <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
               <div class="modal-info-container">
                 <img class="modal-img" src="${employees.results[j].picture.large}" alt="profile picture"/>
@@ -85,21 +82,34 @@ const revealUserAdditionalInfo = (event) => {
                 <p class="modal-text">Birthday: ${employees.results[j].dob.date}</p>
               </div>
             </div>`;
-          }
+
+        // This function closes the modal window
+        const closeModalWindow = () => {
+          const modalDiv = document.querySelector('.modal-container');
+          document.getElementById('gallery').removeChild(modalDiv);
+        }
+        // Attaching event listener to "Close" button
+        document.getElementById('modal-close-btn').addEventListener('click', closeModalWindow);
+        }
       }
+
+      /* Regardless of what HTML element is clicked, function
+      revealUserAdditionalInfo traverses
+      to header3 in order to get its text content */
       if (event.target.tagName === "H3") {
       findMatches(event.target);
-    } else if (event.target.className === "card-info-container") {
+      } else if (event.target.className === "card-info-container") {
       findMatches(event.target.childNodes[1]);
-    } else if (event.target.className === "card-img-container") {
+      } else if (event.target.className === "card-img-container") {
       findMatches(event.target.nextSibling.childNodes[1]);
-    } else if (event.target.tagName === "IMG") {
+      } else if (event.target.tagName === "IMG") {
       findMatches(event.target.parentNode.nextSibling.childNodes[1]);
-    } else if (event.target.tagName === "P") {
+      } else if (event.target.tagName === "P") {
       findMatches(event.target.parentNode.childNodes[1]);
-    }
+      }
     }
   }
 }
 
+// Event Listeners
 document.getElementById('gallery').addEventListener('click', revealUserAdditionalInfo);
