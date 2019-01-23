@@ -68,25 +68,22 @@ const revealUserAdditionalInfo = (event) => {
         console.log(employeeName.length);
         console.log(event.target.textContent.length);
         if (event.target.textContent == employeeName) {
-          let modalWindow = `
-          <div class="modal-container">
-            <div class="modal">
-              <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
-              <div class="modal-info-container">
-                <img class="modal-img" src="${employees.results[j].picture.large}" alt="profile picture"/>
-                <h3 id="name" class="modal-name cap">${employees.results[j].name.first} ${employees.results[j].name.last} </h3>
-                <p class="modal-text">${employees.results[j].email}</p>
-                <p class="modal-text cap">${employees.results[j].location.city}</p>
-                <hr>
-                <p class="modal-text">${employees.results[j].cell}</p>
-                <p class="modal-text">${employees.results[j].location.street}, ${employees.results[j].location.city}, OR ${employees.results[j].location.postcode}</p>
-                <p class="modal-text">Birthday: ${employees.results[j].dob.date}</p>
-              </div>
+          const modalDiv = document.createElement('div');
+          modalDiv.setAttribute('class', 'modal-container');
+          document.getElementById('gallery').appendChild(modalDiv);
+          modalDiv.innerHTML = `<div class="modal">
+            <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+            <div class="modal-info-container">
+              <img class="modal-img" src="${employees.results[j].picture.large}" alt="profile picture"/>
+              <h3 id="name" class="modal-name cap">${employees.results[j].name.first} ${employees.results[j].name.last} </h3>
+              <p class="modal-text">${employees.results[j].email}</p>
+              <p class="modal-text cap">${employees.results[j].location.city}</p>
+              <hr>
+              <p class="modal-text">${employees.results[j].cell}</p>
+              <p class="modal-text">${employees.results[j].location.street}, ${employees.results[j].location.city}, OR ${employees.results[j].location.postcode}</p>
+              <p class="modal-text">Birthday: ${employees.results[j].dob.date}</p>
             </div>
-          </div>
-            `;
-              console.log(modalWindow);
-              document.getElementById('gallery').innerHTML = modalWindow;
+          </div>`;
         }
       }
     }
