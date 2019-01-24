@@ -68,6 +68,9 @@ const revealUserAdditionalInfo = (event) => {
           const modalDiv = document.createElement('div');
           modalDiv.setAttribute('class', 'modal-container');
           document.getElementById('gallery').appendChild(modalDiv);
+          // Formatting date of birth
+          let formattedDOB = employees.results[j].dob.date.substring(0, 10).split("-");
+          // Creating HTML elements for modal window
           modalDiv.innerHTML = `
             <div class="modal">
               <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
@@ -78,8 +81,8 @@ const revealUserAdditionalInfo = (event) => {
                 <p class="modal-text cap">${employees.results[j].location.city}</p>
                 <hr>
                 <p class="modal-text">${employees.results[j].cell}</p>
-                <p class="modal-text">${employees.results[j].location.street}, ${employees.results[j].location.city}, OR ${employees.results[j].location.postcode}</p>
-                <p class="modal-text">Birthday: ${employees.results[j].dob.date}</p>
+                <p class="modal-text">${employees.results[j].location.street}, ${employees.results[j].location.state}, ${employees.results[j].location.postcode}</p>
+                <p class="modal-text">Birthday: ${formattedDOB[1]}/${formattedDOB[2]}/${formattedDOB[0].substring(2, 4)}</p>
               </div>
             </div>`;
 
