@@ -30,8 +30,10 @@ xhr.onreadystatechange = function () {
 }
 /* 3. Opening a request which specifies in a query string
 that we want to reguest info about 12 users and that we want to get
-the response in JSON format*/
-xhr.open('GET', 'https://randomuser.me/api/?format=json&results=12');
+the response in JSON format. Also we're interested only in
+employees from English-spoken countries so one of query string's
+parameters is set accordingly */
+xhr.open('GET', 'https://randomuser.me/api/?format=json&results=12&nat=US,AU,GB');
 // 4. Sending a request
 xhr.send();
 
@@ -114,5 +116,37 @@ const revealUserAdditionalInfo = (event) => {
   }
 }
 
+// Search field
+// Appending input field and button to our web page
+document.querySelector(".search-container").innerHTML = `
+<form action="#" method="get">
+    <input type="search" id="search-input" class="search-input" placeholder="Search...">
+    <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+</form>`;
+/* Processing input value typed in the searchBox. This function loops
+through all headers containing names of employees and shows
+ corresponding employee's card while hiding cards of the rest*/
+const filterDirectoryByName = () => {
+  const search = document.getElementById('search-input').value;
+  console.log(search.toLowerCase());
+  // Selecting all headers on the page which contain employees' names
+  const employeesNames = document.querySelectorAll('h3');
+  console.log(employeesNames[0].innerText.toLowerCase());
+  console.log(employeesNames[0].parentNode.parentNode);
+  // Looping through headers
+  for (let q = 0; q < employeesNames.length; q += 1) {
+    // Hiding all cards
+    employeesNames[q].parentNode.parentNode.style.display = "none";
+
+    /* If header's text content is equal to the search field input
+     value, show the card of the matched employee */
+    if (employeesNames[q].innerText.toLowerCase().includes(search.toLowerCase())) {
+      employeesNames[q].parentNode.parentNode.style.display = "flex";
+    }
+  }
+}
+
+
 // Event Listeners
 document.getElementById('gallery').addEventListener('click', revealUserAdditionalInfo);
+document.getElementById('search-submit').addEventListener('click', filterDirectoryByName);
